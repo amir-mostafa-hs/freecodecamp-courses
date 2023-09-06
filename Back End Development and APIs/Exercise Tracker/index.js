@@ -28,18 +28,24 @@ app.get("/", (req, res) => {
 });
 
 const findUserController = (req, res) => {
-  User.find({}, (err, data) => {
-    if (err) return res.json({ err });
-    res.json(data);
-  });
+  User.find({})
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json({ err });
+    });
 };
 
 const createUserController = (req, res) => {
   const username = req.body.username;
-  User.create({ username: username }, (err, data) => {
-    if (err) return res.json({ err });
-    res.json({ _id: data._id, username: data.username });
-  });
+  User.create({ username: username })
+    .then((data) => {
+      res.json({ _id: data._id, username: data.username });
+    })
+    .catch((err) => {
+      res.json({ err });
+    });
 };
 
 app.route("/api/users").get(findUserController).post(createUserController);
@@ -79,11 +85,17 @@ app.get("/api/users/:_id/logs", async (req, res) => {
   const searchObj = { user_id: user_id };
   const data = {};
   if (from) {
-    searchObj.date.$gte = new Date(from);
+    const date = {
+      $gte: new Date(from),
+    };
+    searchObj.date = date;
     data.from = from;
   }
   if (to) {
-    searchObj.date.$lte = new Date(to);
+    const date = {
+      $lte: new Date(to),
+    };
+    searchObj.date = date;
     data.to = to;
   }
 
