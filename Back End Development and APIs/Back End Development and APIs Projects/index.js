@@ -33,7 +33,9 @@ app.get("/api/:date?", (req, res) => {
   }
 
   // if date is a number, convert to date
-  if (isNaN(date) || typeof +date === 'number') {
+  if (isNaN(date)) {
+    date = new Date(date);
+  } else if (typeof +date === 'number') {
     date = new Date(+date);
   }
 
